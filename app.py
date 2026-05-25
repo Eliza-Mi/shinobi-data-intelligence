@@ -343,14 +343,20 @@ def build_radar_chart(df: pd.DataFrame) -> go.Figure:
         values_closed = values + [values[0]]
         color         = NINJA_COLORS[i % len(NINJA_COLORS)]
 
+        # Converte hex #RRGGBB para rgba com transparência
+        hex_color = color.lstrip("#")
+        r_val = int(hex_color[0:2], 16)
+        g_val = int(hex_color[2:4], 16)
+        b_val = int(hex_color[4:6], 16)
+        fill_color = f"rgba({r_val},{g_val},{b_val},0.12)"
+
         fig.add_trace(go.Scatterpolar(
             r=values_closed,
             theta=labels_closed,
             fill="toself",
             name=row["nome"],
             line=dict(color=color, width=2.5),
-            fillcolor=color.replace(")", ", 0.12)").replace("rgb", "rgba")
-                      if color.startswith("rgb") else f"{color}1F",
+            fillcolor=fill_color,
             hovertemplate=(
                 f"<b>{row['nome']}</b><br>"
                 "%{theta}: <b>%{r:.2f}</b>/5.0<extra></extra>"
