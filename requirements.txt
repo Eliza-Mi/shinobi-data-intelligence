@@ -1,0 +1,22 @@
+# requirements.txt — Shinobi Data Intelligence System (SDIS)
+# ============================================================
+# Dependências do Dashboard (Streamlit Cloud / local)
+# A Lambda usa a layer "AWSSDKPandas-Python312" que já inclui
+# awswrangler, pandas e pyarrow — não precisa de requirements.txt próprio.
+
+# ── Interface ────────────────────────────────────────────────
+streamlit>=1.35.0
+
+# ── Visualização ─────────────────────────────────────────────
+plotly>=5.22.0
+
+# ── Conexão com Athena ────────────────────────────────────────
+# pyathena[pandas]: instala o cursor PandasCursor que retorna DataFrames
+# diretamente, evitando conversão manual de rows → DataFrame.
+pyathena[pandas]>=3.9.0
+
+# ── AWS SDK (apenas para operações diretas fora da Lambda) ───
+boto3>=1.34.0
+
+# ── Data ─────────────────────────────────────────────────────
+pandas>=2.2.0
