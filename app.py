@@ -545,16 +545,10 @@ def main() -> None:
             rename_map["nome"] = "Ninja"
             rename_map["potencial_chakra"] = "Potencial"
             df_display = df_display.rename(columns=rename_map)
-            st.dataframe(
-                df_display.style.format({
-                    col: "{:.2f}" for col in df_display.columns if col not in ["Ninja"]
-                }).background_gradient(
-                    subset=[c for c in df_display.columns if c not in ["Ninja"]],
-                    cmap="Purples",
-                ),
-                use_container_width=True,
-                hide_index=True,
-            )
+            num_cols = [c for c in df_display.columns if c != "Ninja"]
+            for col in num_cols:
+                df_display[col] = df_display[col].apply(lambda x: round(float(x), 2) if x is not None else 0.0)
+            st.dataframe(df_display, use_container_width=True, hide_index=True)
 
     with col_bio:
         st.markdown("#### 📜 Fichas dos Shinobis")
@@ -566,19 +560,13 @@ def main() -> None:
     st.markdown("#### 🏆 Ranking Global de Potencial de Chakra")
     ranking_cols = ["nome", "vila", "rank", "potencial_chakra", "natureza_chakra", "jutsus_count"]
     existing_ranking = [c for c in ranking_cols if c in df_roster.columns]
-    st.dataframe(
-        df_roster[existing_ranking]
-            .head(30)
-            .rename(columns={
-                "nome": "Ninja", "vila": "Vila", "rank": "Rank",
-                "potencial_chakra": "Potencial", "natureza_chakra": "Chakra",
-                "jutsus_count": "Jutsus",
-            })
-            .style.format({"Potencial": "{:.4f}"})
-            .background_gradient(subset=["Potencial"], cmap="Purples"),
-        use_container_width=True,
-        hide_index=True,
-    )
+    df_ranking = df_roster[existing_ranking].head(30).rename(columns={
+        "nome": "Ninja", "vila": "Vila", "rank": "Rank",
+        "potencial_chakra": "Potencial", "natureza_chakra": "Chakra",
+        "jutsus_count": "Jutsus",
+    }).copy()
+    df_ranking["Potencial"] = df_ranking["Potencial"].apply(lambda x: round(float(x), 4) if x is not None else 0.0)
+    st.dataframe(df_ranking, use_container_width=True, hide_index=True)
 
     # ── Rodapé ────────────────────────────────────────────────────────────────
     st.markdown("""
